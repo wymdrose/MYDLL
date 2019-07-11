@@ -43,7 +43,7 @@ bool CsvFile::append(const QStringList& tLine){
 	//mpCsvFile->write(str.toAscii());
 	//mpCsvFile->write(str.toLatin1());
 	mpCsvFile->write(str.toLocal8Bit());
-	mpCsvFile->write(QString(",").toLocal8Bit());
+	mpCsvFile->write(QString(",").c());
 	}
 	*/
 

@@ -222,6 +222,7 @@ bool TubeKnn::getTubeValue(Mat roi, QString& result, float anchorX, float anchor
 		trainlabel.push_back(i);
 	}
 
+	/*
 	for (int i = 0; i < 10; i++)
 	{
 		if (i == 2)
@@ -240,6 +241,7 @@ bool TubeKnn::getTubeValue(Mat roi, QString& result, float anchorX, float anchor
 		traindata.push_back(tmp.reshape(0, 1));
 		trainlabel.push_back(i + 20);
 	}
+	*/
 
 	sprintf(trainfile, "%s\\E.jpg", TRAINPATH);
 	tmp = imread(trainfile, IMREAD_GRAYSCALE);
@@ -248,13 +250,14 @@ bool TubeKnn::getTubeValue(Mat roi, QString& result, float anchorX, float anchor
 	traindata.push_back(tmp.reshape(0, 1));
 	trainlabel.push_back(int('E'));
 	//
+	/*
 	sprintf(trainfile, "%s\\dot.jpg", TRAINPATH);
 	tmp = imread(trainfile, IMREAD_GRAYSCALE);
 	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
 	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
 	traindata.push_back(tmp.reshape(0, 1));
 	trainlabel.push_back(int('D'));
-
+	*/
 	//
 	traindata.convertTo(traindata, CV_32F);
 
@@ -275,6 +278,7 @@ bool TubeKnn::getTubeValue(Mat roi, QString& result, float anchorX, float anchor
 		{
 			result += "E";
 		}
+		/*
 		else if (knn->predict(tube.at(i)) == 'D')
 		{
 			result += ".";
@@ -318,7 +322,7 @@ bool TubeKnn::getTubeValue(Mat roi, QString& result, float anchorX, float anchor
 		else if (knn->predict(tube.at(i)) == 29)
 		{
 			result += "9.";
-		}
+		}*/
 		else
 		{
 			auto a = QString::number(knn->predict(tube.at(i)));
@@ -342,13 +346,9 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		return "empty";
 	namedWindow("image_gry", WINDOW_AUTOSIZE);
 
-//	blur(image_gry, image_gry, Size(5, 5), Point(-1, -1));
 	GaussianBlur(image_gry, image_gry, Size(11, 11), 4, 4);
 	imshow("gaussian blur", image_gry);
 
-//	Mat Hist;
-//	equalizeHist(image_gry, Hist);
-//	imshow("Hist", Hist);
 		
 	Mat image_bin;
 	threshold(image_gry, image_bin, thresh, 255, THRESH_BINARY);
@@ -357,23 +357,15 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 	Mat image_dil;
 	Mat element;
 
-	/*
+
 	element = getStructuringElement(MORPH_ELLIPSE, Size(anchorX, anchorY));
 	morphologyEx(image_bin, image_dil, MORPH_DILATE, element);
-	*/
-
-	element = getStructuringElement(MORPH_ELLIPSE, Size(15, 15));
-	morphologyEx(image_bin, image_dil, MORPH_DILATE, element);
-
-//	cv::Mat imageThin = thinImage(image_dil);
-//	imshow("imageThin", imageThin);
 
 	imshow("image_dil1", image_dil);
 
-	//
 	vector<vector<Point> > contours_out;
 	vector<Vec4i> hierarchy;
-	findContours(image_dil, contours_out, hierarchy, RETR_CCOMP, CHAIN_APPROX_NONE);  // program crash when using debug
+	findContours(image_dil, contours_out, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);  // program crash when using debug
 	drawContours(image_dil, contours_out, -1, Scalar(255, 0, 0), 1);//  
 
 	// re-arrange loaction according to the real position in the original image 
@@ -395,7 +387,7 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		{
 			tube.push_back(image_bin(num_location.at(i)));
 			sprintf(filenamew, "Snapshot/%s%d.jpg", "loaction", tube_num);
-//			imshow(filenamew, tube.at(tube_num));
+			imshow(filenamew, tube.at(tube_num));
 			imwrite(filenamew, tube.at(tube_num));
 			tube_num++;
 		}
@@ -416,17 +408,6 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		trainlabel.push_back(i);
 	}
 
-	for (int i = 0; i < 10; i++)
-	{
-		sprintf(trainfile, "%s\\%d..jpg", TRAINPATH, i);
-
-		tmp = imread(trainfile, IMREAD_GRAYSCALE);
-		threshold(tmp, tmp, 100, 255, THRESH_BINARY);
-		cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
-		traindata.push_back(tmp.reshape(0, 1));
-		trainlabel.push_back(i + 20);
-	}
-
 	sprintf(trainfile, "%s\\E.jpg", TRAINPATH);
 	tmp = imread(trainfile, IMREAD_GRAYSCALE);
 	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
@@ -434,14 +415,7 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 	traindata.push_back(tmp.reshape(0, 1));
 	trainlabel.push_back(int('E'));
 	//
-	sprintf(trainfile, "%s\\dot.jpg", TRAINPATH);
-	tmp = imread(trainfile, IMREAD_GRAYSCALE);
-	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
-	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
-	traindata.push_back(tmp.reshape(0, 1));
-	trainlabel.push_back(int('D'));
 
-	//
 	traindata.convertTo(traindata, CV_32F);
 
 	int K = 1;
@@ -461,50 +435,6 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		{
 			result += "E";
 		}
-		else if (knn->predict(tube.at(i)) == 'D')
-		{
-			result += ".";
-		}
-		else if (knn->predict(tube.at(i)) == 20)
-		{
-			result += "0.";
-		}
-		else if (knn->predict(tube.at(i)) == 21)
-		{
-			result += "1.";
-		}
-		else if (knn->predict(tube.at(i)) == 22)
-		{
-			result += "2.";
-		}
-		else if (knn->predict(tube.at(i)) == 23)
-		{
-			result += "3.";
-		}
-		else if (knn->predict(tube.at(i)) == 24)
-		{
-			result += "4.";
-		}
-		else if (knn->predict(tube.at(i)) == 25)
-		{
-			result += "5.";
-		}
-		else if (knn->predict(tube.at(i)) == 26)
-		{
-			result += "6.";
-		}
-		else if (knn->predict(tube.at(i)) == 27)
-		{
-			result += "7.";
-		}
-		else if (knn->predict(tube.at(i)) == 28)
-		{
-			result += "8.";
-		}
-		else if (knn->predict(tube.at(i)) == 29)
-		{
-			result += "9.";
-		}
 		else
 		{
 			auto a = QString::number(knn->predict(tube.at(i)));
@@ -513,14 +443,8 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 
 	}
 
-	waitKey(0);
+	waitKey(1000);
 	destroyAllWindows();
-
-	/*
-	if (!result.contains('E') && result.size() > 3)
-	{
-
-	}*/
 
 	return true;
 }

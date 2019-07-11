@@ -1,6 +1,7 @@
 #include "loginui.h"
 #include <QPainter>
 #include <QString>
+#include <QMessageBox>
 
 LoginUi::LoginUi(const QString imgPath, QVector<QStringList> vector, int& mode, QDialog *parent)
 	: QDialog(parent), mBackImgPath(imgPath), mMode(mode), mVector(vector)
@@ -51,10 +52,8 @@ LoginUi::LoginUi(const QString imgPath, int& mode, QDialog *parent)
 
 	QStringList tUserPswList1 = { QStringLiteral("操作员"), "OBC123" };
 	QStringList tUserPswList2 = { QStringLiteral("工程师"), "OBC456" };
-	QStringList tUserPswList3 = { "ddd", "ddd" };
 	mVector.append(tUserPswList1);
 	mVector.append(tUserPswList2);
-	mVector.append(tUserPswList3);
 
 	for (size_t i = 0; i < mVector.size(); i++)
 	{
@@ -70,6 +69,11 @@ LoginUi::LoginUi(const QString imgPath, int& mode, QDialog *parent)
 				this->close();
 			}
 		}
+
+		if (!mMode){
+			QMessageBox::information(this, "Login", QStringLiteral("密码错误！"));
+		}
+				
 	});
 
 	connect(ui.buttonBoxOk, &QDialogButtonBox::rejected, [this]()

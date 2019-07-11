@@ -208,7 +208,8 @@ void _dongle(){
 		macList.append(nets[i].hardwareAddress());
 	}
 
-	if (!macList.contains("E4:42:A6:F7:2E:48"))
+	if (!(macList.contains("E4:42:A6:F7:2E:48") 
+		|| macList.contains("54:B2:03:84:79:D6")))
 	{
 		qDebug() << "_dongle";
 		_ASSERT(false);
