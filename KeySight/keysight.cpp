@@ -78,7 +78,7 @@ float Ks34970A_2A::getMeasure(const QString type, QString channel){
 		strcpy(stringinput, cmd.toStdString().c_str());
 		BytesToWrite = (ViUInt32)strlen(stringinput);
 		status = viWrite(mInst, (ViBuf)stringinput, BytesToWrite, &rcount);
-		_sleep(500);
+		_sleep(1000);
 		status = viReadAsync(mInst, data1, READ_BUFFER_SIZE - 1, &job);
 		return QString((char*)data1).toFloat();
 	}

@@ -124,7 +124,7 @@ bool Wt230::getPower(int m, QString& value){
 	strcpy(stringinput, "OD\n");
 	BytesToWrite = (ViUInt32)strlen(stringinput);
 	status = viWrite(mInst, (ViBuf)stringinput, BytesToWrite, &rcount);
-	_sleep(500);
+	_sleep(1000);
 	status = viReadAsync(mInst, data1, READ_BUFFER_SIZE - 1, &job);
 	QStringList tValue = QString((char*)&data1[1]).split(",");
 

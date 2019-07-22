@@ -408,12 +408,42 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		trainlabel.push_back(i);
 	}
 
+	sprintf(trainfile, "%s\\A.jpg", TRAINPATH);
+	tmp = imread(trainfile, IMREAD_GRAYSCALE);
+	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
+	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
+	traindata.push_back(tmp.reshape(0, 1));
+	trainlabel.push_back(int('A'));
+	//
 	sprintf(trainfile, "%s\\E.jpg", TRAINPATH);
 	tmp = imread(trainfile, IMREAD_GRAYSCALE);
 	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
 	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
 	traindata.push_back(tmp.reshape(0, 1));
 	trainlabel.push_back(int('E'));
+
+	//
+	sprintf(trainfile, "%s\\n.jpg", TRAINPATH);
+	tmp = imread(trainfile, IMREAD_GRAYSCALE);
+	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
+	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
+	traindata.push_back(tmp.reshape(0, 1));
+	trainlabel.push_back(int('n'));
+	//
+
+	sprintf(trainfile, "%s\\d.jpg", TRAINPATH);
+	tmp = imread(trainfile, IMREAD_GRAYSCALE);
+	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
+	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
+	traindata.push_back(tmp.reshape(0, 1));
+	trainlabel.push_back(int('d'));
+	//
+	sprintf(trainfile, "%s\\F.jpg", TRAINPATH);
+	tmp = imread(trainfile, IMREAD_GRAYSCALE);
+	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
+	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
+	traindata.push_back(tmp.reshape(0, 1));
+	trainlabel.push_back(int('F'));
 	//
 
 	traindata.convertTo(traindata, CV_32F);
@@ -434,6 +464,22 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		if (knn->predict(tube.at(i)) == 'E')
 		{
 			result += "E";
+		}
+		else if (knn->predict(tube.at(i)) == 'A')
+		{
+			result += "A";
+		}
+		else if (knn->predict(tube.at(i)) == 'n')
+		{
+			result += "n";
+		}
+		else if (knn->predict(tube.at(i)) == 'd')
+		{
+			result += "d";
+		}
+		else if (knn->predict(tube.at(i)) == 'F')
+		{
+			result += "F";
 		}
 		else
 		{
