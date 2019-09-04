@@ -110,6 +110,11 @@ bool Wt230::get(float& recv){
 	return true;
 }
 
+void Wt230::tabChannel(int m)
+{
+	viPrintf(mInst, QString("DA1;EA%0;DB2;EB%0;DC3;EC%0\n").arg(m).toStdString().c_str());
+}
+
 bool Wt230::getPower(int m, QString& value){
 
 	viPrintf(mInst, QString("DA1;EA%0;DB2;EB%0;DC3;EC%0\n").arg(m).toStdString().c_str());

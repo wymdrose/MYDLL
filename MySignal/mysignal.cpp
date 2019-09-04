@@ -18,8 +18,9 @@ MySignalUi::MySignalUi()
 	connect(this, SIGNAL(colorSignal(QTableWidgetItem*, const QColor, int)), this, SLOT(colorSlot(QTableWidgetItem*, const QColor, int)));
 	connect(this, SIGNAL(ableSignal(QPushButton*, bool)), this, SLOT(ableSlot(QPushButton*, bool)));
 	connect(this, SIGNAL(showMsgSignal(QTextBrowser*, const QString&)), this, SLOT(showMsg(QTextBrowser*, const QString &)));
-	connect(this, SIGNAL(showDialogSignal(const QString, const QString)), this, SLOT(showDialog(const QString, const QString))/*, Qt::BlockingQueuedConnection*/);
-	
+	connect(this, SIGNAL(showDialogSignal(const QString, const QString)), this, SLOT(showDialog(const QString, const QString)));
+	connect(this, SIGNAL(showBlockSignal(const QString, const QString)), this, SLOT(showBlock(const QString, const QString)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(showBlockSignal(const QString, const QString, bool&)), this, SLOT(showBlock(const QString, const QString, bool&)), Qt::BlockingQueuedConnection);
 }
 
 MySignalUi::~MySignalUi()
@@ -88,4 +89,22 @@ void MySignalUi::showMsg(QTextBrowser* p, const QString t){
 
 void MySignalUi::showDialog(const QString title, const QString msg){
 	QMessageBox::information(&mDialog, title, msg);
+}
+
+void MySignalUi::showBlock(const QString title, const QString msg)
+{
+	QMessageBox::information(&mDialog, title, msg);
+}
+
+void MySignalUi::showBlock(const QString title, const QString msg, bool& question)
+{
+	if (QMessageBox::Yes == QMessageBox::question(&mDialog, title, msg))
+	{
+		question = true;
+	}
+	else
+	{
+		question = false;
+	}
+	
 }

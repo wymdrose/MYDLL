@@ -40,12 +40,21 @@ bool Ks34970A_2A::init(){
 	}
 
 	QString tRecv;
-	mpCommunicate->communicate("*RST;*CLS\r\n", tRecv, 0);
+
+//	mpCommunicate->communicate("MEMory:STATe:RECall:AUTO OFF\r\n", tRecv, 0);
+	mpCommunicate->communicate("*CLS\r\n", tRecv, 0);
+//	mpCommunicate->communicate("*RST\r\n", tRecv, 0);
 
 	//		mpCommunicate->communicate("CONF:VOLT:DC 10,0.001,(@101)\r\n", tRecv);
 	//		mpCommunicate->communicate("READ?\r\n", tRecv);
-
 	//		mpCommunicate->communicate("MEASure:VOLTage:DC? (@103)\r\n", tRecv);
+
+	voltageAc = "VOLT:AC?";
+	voltageDc = "VOLT:DC?";
+	currentAc = "CURR:AC?";
+	currentDc = "CURR:DC?";
+	frequency = "FREQUENCY?";
+	resistance = "RES?";
 
 	return true;
 }

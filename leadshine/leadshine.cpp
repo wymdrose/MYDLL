@@ -39,12 +39,14 @@ short Dmc1380::Init()
 		for (int i = 0; i < axesPerCard; i++)
 		{
 			pulPerMM[i] = 1.0;
-			accTime[i] = 0.2;
-			decTime[i] = 0.2;
-			minSpd[i] = 500;
-			maxSpd[i] = 500;
+			accTime[i] = 1.0;
+			decTime[i] = 1.0;
+			minSpd[i] = 100;
+			maxSpd[i] = 1000;
 		}
 	}
+
+	AxisConfig(0, 1, 1, 1, 100, 1);
 
 	return 0;
 }
@@ -56,13 +58,13 @@ void Dmc1380::Close()
 
 uint Dmc1380::AbsMove(ushort axis, double pos, double speed)
 {
-	d1000_start_t_move(axis, (int)(pos * pulPerMM[axis]), minSpd[axis], speed, accTime[axis]);
+	d1000_start_ta_move(axis, (int)(pos * pulPerMM[axis]), minSpd[axis], speed, accTime[axis]);
 	return 1;
 }
 
 uint Dmc1380::RelMove(ushort axis, double dist, double speed)
 {
-	d1000_start_ta_move(axis, (int)(dist * pulPerMM[axis]), minSpd[axis], speed, accTime[axis]);
+	d1000_start_t_move(axis, (int)(dist * pulPerMM[axis]), minSpd[axis], speed, accTime[axis]);
 	return 1;
 }
 

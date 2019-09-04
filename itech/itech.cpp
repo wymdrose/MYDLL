@@ -106,3 +106,28 @@ bool ItechIt8800::cmd(const QString cmd)	{
 
 	return true;
 }
+
+void ItechIt8800::setRemote()
+{
+	QString tRecv;
+
+	mpCommunicate->communicate("SYSTem:REMote\r\n", tRecv, 0);
+}
+
+void ItechIt8800::setInput(bool in)
+{
+	QString tRecv;
+	QString tSend = in ? "INPut ON\r\n" : "INPut OFF\r\n";
+	mpCommunicate->communicate(tSend, tRecv, 0);
+}
+
+bool ItechIt8800::setCurrent(const QString tCurrent){
+	QString tRecv;
+
+	mpCommunicate->communicate("FUNC CURR\r\n", tRecv, 0);
+
+	mpCommunicate->communicate("CURR " + tCurrent + "\r\n", tRecv, 0);
+
+
+	return true;
+}

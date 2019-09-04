@@ -254,7 +254,25 @@ void Chroma63800::setPower(QString power)
 	else
 	{
 		QString tRecv;
+		mpCommunicate->communicate("MODE POW\r\n", tRecv, 0);
 		mpCommunicate->communicate("POW " + power + "\r\n", tRecv, 0);
 	}
 	
+}
+
+bool Chroma63800::setCurrent(const QString current)
+{
+
+	if (mBgpib)
+	{
+		viPrintf(mInst, QString("CURR " + current + "\r\n").toStdString().c_str());
+	}
+	else
+	{
+		QString tRecv;
+		mpCommunicate->communicate("MODE CURR\r\n", tRecv, 0);
+		mpCommunicate->communicate("CURR " + current + "\r\n", tRecv, 0);
+	}
+
+	return true;
 }
