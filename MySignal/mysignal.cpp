@@ -5,6 +5,7 @@ using namespace Drose;
 
 MySignalUi::MySignalUi()
 {
+	connect(this, SIGNAL(scrollSignal(QTableWidget*, QTableWidgetItem*)), this, SLOT(scrollSlot(QTableWidget*, QTableWidgetItem*)));
 	connect(this, SIGNAL(textSignal(QLineEdit*, QString)), this, SLOT(textSlot(QLineEdit*, QString)));
 	connect(this, SIGNAL(textSignal(QTextEdit*, QString)), this, SLOT(textSlot(QTextEdit*, QString)));
 	connect(this, SIGNAL(textSignal(QPushButton*, QString)), this, SLOT(textSlot(QPushButton*, QString)));
@@ -26,6 +27,11 @@ MySignalUi::MySignalUi()
 MySignalUi::~MySignalUi()
 {
 
+}
+
+void MySignalUi::scrollSlot(QTableWidget* p, QTableWidgetItem* t)
+{
+	p->scrollToItem(t);
 }
 
 void MySignalUi::textSlot(QLineEdit* p, QString t)

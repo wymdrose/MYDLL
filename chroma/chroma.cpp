@@ -1,6 +1,30 @@
 #include "../../lib/chroma.h"
 
 using namespace InstrumentApi;
+using namespace Visa;
+
+static ViJobId job;
+static ViAddr uhandle;
+static ViStatus status, StatusSession;
+static ViSession Sessionparam;
+static ViEventType EventTypeparam;
+static ViAddr Addressparam;
+static ViUInt32 BytesToWrite;
+static ViSession defaultRM;
+static ViUInt32 rcount, RdCount;
+static volatile ViBoolean stopflag = VI_FALSE;
+static int letter;
+static char stringinput[256];
+
+static ViStatus _VI_FUNCH AsyncHandler(ViSession vi, ViEventType etype, ViEvent event, ViAddr userHandle){
+	Sessionparam = vi;
+	EventTypeparam = etype;
+	Addressparam = userHandle;
+	viGetAttribute(event, VI_ATTR_STATUS, &StatusSession);
+	viGetAttribute(event, VI_ATTR_RET_COUNT, &RdCount);
+	stopflag = VI_TRUE;
+	return VI_SUCCESS;
+}
 
 chroma::chroma()
 {
@@ -183,11 +207,17 @@ bool Chroma63800::init()
 	QString tRecv;
 
 	mpCommunicate->communicate("MODE POW\r\n", tRecv, 0);
+	mpCommunicate->communicate("ABA ON\r\n", tRecv, 0);
 	mpCommunicate->communicate("CURR:FALL 200\r\n", tRecv, 0);
 	mpCommunicate->communicate("CURR:RISE 200\r\n", tRecv, 0);
 	mpCommunicate->communicate("CURR:HIGH 45\r\n", tRecv, 0);
-	mpCommunicate->communicate("CURR:MAX 45\r\n", tRecv, 0);
+	mpCommunicate->communicate("POW:HIGH 4500\r\n", tRecv, 0);
+	mpCommunicate->communicate("CURR:MAX 100\r\n", tRecv, 0);
 	mpCommunicate->communicate("CURR:PEAK:MAX 135\r\n", tRecv, 0);
+
+	mpCommunicate->communicate("TIME:MODE HODE\r\n", tRecv, 0);
+	mpCommunicate->communicate("TIME:OUT 180\r\n", tRecv, 0);
+	
 
 	return 0;
 }
@@ -256,6 +286,7 @@ void Chroma63800::setPower(QString power)
 		QString tRecv;
 		mpCommunicate->communicate("MODE POW\r\n", tRecv, 0);
 		mpCommunicate->communicate("POW " + power + "\r\n", tRecv, 0);
+		mpCommunicate->communicate("CURR:MAX 100\r\n", tRecv, 0);
 	}
 	
 }

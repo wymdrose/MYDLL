@@ -29,7 +29,9 @@ bool Wst60m485::init(){
 	return true;
 }
 
-bool Wst60m485::getVoice(unsigned short& voice){
+int Wst60m485::getVoice(){
+
+	unsigned short voice;
 	QByteArray tSend;
 
 	//0A 04 00 00 00 03 B1 70
@@ -53,5 +55,27 @@ bool Wst60m485::getVoice(unsigned short& voice){
 
 	memcpy(&voice, tArray, 2);
 
-	return true;
+	return voice;
+}
+
+int Wst60m485::getVoices()
+{
+	QVector<int> vVoices;
+
+	for (size_t i = 0; i < 5; i++)
+	{
+		int voice = getVoice();
+		if (voice)
+		{
+			vVoices.push_back(voice);
+		}
+	}
+
+	int voicesum(0);
+	for (size_t i = 0; i < vVoices.length(); i++)
+	{
+		voicesum += vVoices[i];
+	}
+
+	return voicesum / vVoices.length();
 }
