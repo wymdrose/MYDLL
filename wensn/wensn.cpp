@@ -79,3 +79,19 @@ int Wst60m485::getVoices()
 
 	return voicesum / vVoices.length();
 }
+
+int Wst60m485::getVoiceMax()
+{
+	int max(0);
+	for (size_t i = 0; i < 10; i++)
+	{
+		int voice = getVoice();
+		if (voice > max)
+		{
+			max = voice;
+		}
+		_sleep(100);
+	}
+
+	return max;
+}

@@ -472,6 +472,22 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
 	traindata.push_back(tmp.reshape(0, 1));
 	trainlabel.push_back(int('o'));
+
+	//
+	sprintf(trainfile, "%s\\C.jpg", TRAINPATH);
+	tmp = imread(trainfile, IMREAD_GRAYSCALE);
+	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
+	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
+	traindata.push_back(tmp.reshape(0, 1));
+	trainlabel.push_back(int('C'));
+
+	//
+	sprintf(trainfile, "%s\\r.jpg", TRAINPATH);
+	tmp = imread(trainfile, IMREAD_GRAYSCALE);
+	threshold(tmp, tmp, 100, 255, THRESH_BINARY);
+	cv::resize(tmp, tmp, Size(NORMWIDTH, NORMHEIGHT));
+	traindata.push_back(tmp.reshape(0, 1));
+	trainlabel.push_back(int('r'));
 	//
 	traindata.convertTo(traindata, CV_32F);
 
@@ -524,6 +540,14 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 		{
 			result += "o";
 		}
+		else if (knn->predict(tube.at(i)) == 'C')
+		{
+			result += "C";
+		}
+		else if (knn->predict(tube.at(i)) == 'r')
+		{
+			result += "r";
+		}
 		else
 		{
 			auto a = QString::number(knn->predict(tube.at(i)));
@@ -532,7 +556,7 @@ bool TubeKnn::getTubeValue(QString pathTube, QString& result, float anchorX, flo
 
 	}
 
-	waitKey(1000);
+	waitKey(500);
 	destroyAllWindows();
 
 	return true;

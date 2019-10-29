@@ -68,9 +68,10 @@ bool Ks34970A_2A::init(){
 	mpCommunicate->communicate("*CLS\r\n", tRecv, 0);
 //	mpCommunicate->communicate("*RST\r\n", tRecv, 0);
 
-	//		mpCommunicate->communicate("CONF:VOLT:DC 10,0.001,(@101)\r\n", tRecv);
-	//		mpCommunicate->communicate("READ?\r\n", tRecv);
-	//		mpCommunicate->communicate("MEASure:VOLTage:DC? (@103)\r\n", tRecv);
+//	mpCommunicate->communicate("CONF:VOLT:DC 1,1E-6,(@102)\r\n", tRecv);
+
+	//mpCommunicate->communicate("READ?\r\n", tRecv);
+	//mpCommunicate->communicate("MEASure:VOLTage:DC? (@103)\r\n", tRecv);
 
 	voltageAc = "VOLT:AC?";
 	voltageDc = "VOLT:DC?";
@@ -98,6 +99,16 @@ void Ks34970A_2A::init(int address)
 
 	status = viInstallHandler(mInst, VI_EVENT_IO_COMPLETION, AsyncHandler, uhandle);
 	status = viEnableEvent(mInst, VI_EVENT_IO_COMPLETION, VI_HNDLR, VI_NULL);
+}
+
+double Ks34970A_2A::getDcmVolt(QString channel)
+{
+	QString cmd = "MEAS:VOLT:DC? 1,1E-06,(@" + channel + ")\r\n";
+
+	QString tRecv = "+3.20000000E-07";
+	mpCommunicate->communicate(cmd, tRecv);
+
+	return tRecv.toDouble();
 }
 
 float Ks34970A_2A::getMeasure(const QString type, QString channel){
@@ -132,6 +143,7 @@ bool Ks34970A_2A::getMeasure(const QString type, QString channel, float& value){
 	}
 	else
 	{
+
 		QString cmd = "MEAS:" + type + " (@" + channel + ")\r\n";
 		QString tRecv;
 		mpCommunicate->communicate(cmd, tRecv);
