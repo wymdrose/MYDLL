@@ -90,7 +90,7 @@ int Wst60m485::getVoiceMax()
 		{
 			max = voice;
 		}
-		_sleep(100);
+		_sleep(300);
 	}
 
 	return max;

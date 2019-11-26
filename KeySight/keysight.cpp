@@ -87,6 +87,15 @@ void Ks34970A_2A::init(int address)
 {
 	mBgpib = true;
 
+	viPrintf(mInst, "*CLS\r\n");
+	voltageAc = "VOLT:AC?";
+	voltageDc = "VOLT:DC?";
+	currentAc = "CURR:AC?";
+	currentDc = "CURR:DC?";
+	frequency = "FREQUENCY?";
+	resistance = "RES?";
+
+
 	status = viOpenDefaultRM(&defaultRM);
 	if (status < VI_SUCCESS)
 	{
@@ -103,12 +112,28 @@ void Ks34970A_2A::init(int address)
 
 double Ks34970A_2A::getDcmVolt(QString channel)
 {
-	QString cmd = "MEAS:VOLT:DC? 1,1E-06,(@" + channel + ")\r\n";
+	if (mBgpib)
+	{
+		QString cmd = "MEAS:VOLT:DC? 1,1E-06,(@" + channel + ")\r\n";
+		_sleep(1000);
+		memset(data1, 0, READ_BUFFER_SIZE);
+		strcpy(stringinput, cmd.toStdString().c_str());
+		BytesToWrite = (ViUInt32)strlen(stringinput);
+		status = viWrite(mInst, (ViBuf)stringinput, BytesToWrite, &rcount);
+		_sleep(1000);
+		status = viReadAsync(mInst, data1, READ_BUFFER_SIZE - 1, &job);
+		return QString((char*)data1).toFloat();
+	}
+	else
+	{
+		QString cmd = "MEAS:VOLT:DC? 1,1E-06,(@" + channel + ")\r\n";
 
-	QString tRecv = "+3.20000000E-07";
-	mpCommunicate->communicate(cmd, tRecv);
+		QString tRecv = "+3.20000000E-07";
+		mpCommunicate->communicate(cmd, tRecv);
 
-	return tRecv.toDouble();
+		return tRecv.toDouble();
+	}
+	
 }
 
 float Ks34970A_2A::getMeasure(const QString type, QString channel){
@@ -117,6 +142,7 @@ float Ks34970A_2A::getMeasure(const QString type, QString channel){
 
 	if (mBgpib)
 	{
+		_sleep(1000);
 		memset(data1, 0, READ_BUFFER_SIZE);
 		strcpy(stringinput, cmd.toStdString().c_str());
 		BytesToWrite = (ViUInt32)strlen(stringinput);

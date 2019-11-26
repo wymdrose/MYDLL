@@ -162,3 +162,26 @@ bool Wt230::getPower(int m, QString& value){
 	value = tValue[0].right(tValue[0].length() - 1);
 	return true;
 }
+
+float Wt230::getFreq(){
+
+	viPrintf(mInst, "DA1;EA3;DB2;EB3;DC7;EC3\n");
+	viPrintf(mInst, "OF1,7,3\n");
+
+	/*
+	char tData[50];
+	viScanf(inst, tData);
+	*/
+
+	memset(data1, 0, READ_BUFFER_SIZE);
+	strcpy(stringinput, "OD\n");
+	BytesToWrite = (ViUInt32)strlen(stringinput);
+	status = viWrite(mInst, (ViBuf)stringinput, BytesToWrite, &rcount);
+	_sleep(1000);
+	status = viReadAsync(mInst, data1, READ_BUFFER_SIZE - 1, &job);
+	QStringList tValue = QString((char*)&data1[1]).split(",");
+
+
+	//	value = tValue[m - 1].right(tValue[m - 1].length() - 1).toFloat();
+	return tValue[0].right(tValue[0].length() - 1).toFloat();
+}

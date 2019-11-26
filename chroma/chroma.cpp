@@ -212,7 +212,7 @@ bool Chroma63800::init()
 	mpCommunicate->communicate("CURR:RISE 200\r\n", tRecv, 0);
 	mpCommunicate->communicate("CURR:HIGH 45\r\n", tRecv, 0);
 	mpCommunicate->communicate("POW:HIGH 4500\r\n", tRecv, 0);
-	mpCommunicate->communicate("CURR:MAX 100\r\n", tRecv, 0);
+	mpCommunicate->communicate("CURR:MAX 45\r\n", tRecv, 0);
 	mpCommunicate->communicate("CURR:PEAK:MAX 135\r\n", tRecv, 0);
 
 	mpCommunicate->communicate("TIME:MODE HODE\r\n", tRecv, 0);
@@ -275,6 +275,22 @@ void Chroma63800::setInput(QString on_off)
 	
 }
 
+void Chroma63800::setResistance(QString res)
+{
+	if (mBgpib)
+	{
+		viPrintf(mInst, QString("RES " + res + "\r\n").toStdString().c_str());
+	}
+	else
+	{
+		QString tRecv;
+		mpCommunicate->communicate("MODE RES\r\n", tRecv, 0);
+		mpCommunicate->communicate("RES " + res + "\r\n", tRecv, 0);
+		mpCommunicate->communicate("CURR:HIGH 45\r\n", tRecv, 0);
+		mpCommunicate->communicate("CURR:MAX 45\r\n", tRecv, 0);
+	}
+}
+
 void Chroma63800::setPower(QString power)
 {
 	if (mBgpib)
@@ -286,7 +302,8 @@ void Chroma63800::setPower(QString power)
 		QString tRecv;
 		mpCommunicate->communicate("MODE POW\r\n", tRecv, 0);
 		mpCommunicate->communicate("POW " + power + "\r\n", tRecv, 0);
-		mpCommunicate->communicate("CURR:MAX 100\r\n", tRecv, 0);
+		mpCommunicate->communicate("CURR:HIGH 45\r\n", tRecv, 0);
+		mpCommunicate->communicate("CURR:MAX 45\r\n", tRecv, 0);
 	}
 	
 }
