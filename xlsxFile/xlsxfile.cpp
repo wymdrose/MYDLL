@@ -2,7 +2,7 @@
 
 using namespace FileIo;
 
-void readExcel(QString path, QTableWidget* pTableWidget)
+void xlsxFile::readExcel(QString path, QTableWidget* pTableWidget)
 {
 	QXlsx::Document xlsx(path);
 	QXlsx::Workbook *workBook = xlsx.workbook();
@@ -47,4 +47,28 @@ void readExcel(QString path, QTableWidget* pTableWidget)
 			pTableWidget->removeRow(i);
 		else break;
 	}
+}
+
+
+
+bool xlsxFile::writeExcel(QString path, QTableWidget* pTableWidget)
+{
+//	if (currentScriptIndex == -1) return;
+	QXlsx::Document xlsx(path);
+	QString value;
+	for (int i = 0; i < pTableWidget->rowCount(); i++)
+	{
+		for (int j = 0; j < pTableWidget->columnCount(); j++)
+		{
+			QTableWidgetItem *item = pTableWidget->item(i, j);
+			if (item == NULL)
+				value = "";
+			else
+				value = item->text();
+			xlsx.write(i + 1, j + 1, value);
+		}
+	}
+//	if (xlsx.saveAs(path))
+	if (xlsx.save())
+		return true;
 }
